@@ -6,11 +6,10 @@
 <meta name="theme-color" content="#f5f1e8">
 <title>Bullshit Bingo Monday · Abteilung für strategische Floskeln</title>
 <meta name="description" content="Das Live-Quiz für alle, die in Meetings schon mal eine Synergie gehoben haben. Per QR-Code mitspielen und Daily Sprint Master werden.">
-<link rel="stylesheet" href="/static/style.css?v=boardroom">
+<link rel="stylesheet" href="/static/style.css?v=report">
 <script src="/static/app.js?v=sprint" defer></script>
 </head>
 <body>
-<header><div class="shell top"><a href="/" class="brand"><span aria-hidden="true">✳</span> Bullshit Bingo Monday</a><span id="connection" hidden></span></div></header>
 <main class="shell">
 <p id="error" role="alert" hidden></p>
 <section id="home" hidden>
@@ -27,10 +26,10 @@
     <figure class="board-report">
       <figcaption><span>Aus dem Monatsbericht</span><strong>Projektfortschritt</strong></figcaption>
       <div class="report-data">
-        <div><span>Kick-off geplant</span><strong>100 %</strong><i style="--bar:100%" aria-hidden="true"></i></div>
-        <div><span>Folien fertig</span><strong>90 %</strong><i style="--bar:90%" aria-hidden="true"></i></div>
-        <div><span>Stakeholder aligned</span><strong>60 %</strong><i style="--bar:60%" aria-hidden="true"></i></div>
-        <div><span>Entscheidung getroffen</span><strong>0 %</strong><i style="--bar:0%" aria-hidden="true"></i></div>
+        <div><span>Kick-off geplant</span><strong>100 %</strong></div>
+        <div><span>Folien fertig</span><strong>90 %</strong></div>
+        <div><span>Stakeholder aligned</span><strong>60 %</strong></div>
+        <div><span>Entscheidung getroffen</span><strong>0 %</strong></div>
       </div>
       <p>Stand heute. Nächster Schritt: ein Termin zur Terminfindung.</p>
     </figure>
@@ -63,7 +62,7 @@
   <footer class="campaign-footer">Die Teilnahme ersetzt keine Führungsverantwortung. Für Folgeschäden durch weitere Meetings ist der Lenkungskreis zuständig.</footer>
 </section>
 <section id="room" hidden>
-  <div class="room-head"><div><p id="role" class="muted"></p><h1 id="room-title">Quiz</h1></div><div id="room-links"><a id="beam-link" class="button" target="_blank" rel="noopener" hidden>Beamer öffnen ↗</a></div></div>
+  <div class="room-head"><div><p id="role" class="muted"></p><h1 id="room-title">Quiz</h1></div><div id="room-links"><span id="connection" hidden></span><a id="beam-link" class="button" target="_blank" rel="noopener" hidden>Beamer öffnen ↗</a></div></div>
   <div class="columns room-grid">
     <div class="stack">
       <section id="invite" class="panel invite" hidden>
