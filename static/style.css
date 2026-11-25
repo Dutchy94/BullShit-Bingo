@@ -393,3 +393,26 @@ main{padding-bottom:3rem!important}h1,h2,p{margin:0}h1{font-size:clamp(2rem,5.6v
 #approval-veto:empty { display: none; }
 .approval-loop { margin-bottom: .45rem; color: #4f5449; font-size: .9rem; }
 .approval-question { font-size: 1.12rem; font-weight: 750; }
+
+.project-forecast {
+  padding: .75rem .85rem;
+  border-block: 1px solid var(--report-rule);
+  background: #ebe6d9;
+}
+.project-forecast h3 { margin: 0; font-family: Georgia, serif; font-size: 1.04rem; }
+.project-forecast dl { display: grid; gap: .55rem; margin: .55rem 0 0; font-size: .84rem; }
+.project-forecast dt { font-weight: 750; }
+.project-forecast dd { margin: .08rem 0 0; color: #4f5449; }
+.forecast-track {
+  display: block;
+  height: .35rem;
+  margin-top: .4rem;
+  background: #d4cebf;
+}
+.forecast-track span {
+  display: block;
+  height: 100%;
+  background: var(--report-accent);
+  transition: width .25s ease-out;
+}
+@media (prefers-reduced-motion: reduce) { .forecast-track span { transition: none; } }

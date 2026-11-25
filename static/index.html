@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#f5f1e8">
 <title>Bullshit Bingo Monday · Abteilung für strategische Floskeln</title>
 <meta name="description" content="Das Live-Quiz für alle, die in Meetings schon mal eine Synergie gehoben haben. Per QR-Code mitspielen und Daily Sprint Master werden.">
-<link rel="stylesheet" href="/static/style.css?v=projektauftrag">
-<script src="/static/app.js?v=projektauftrag" defer></script>
+<link rel="stylesheet" href="/static/style.css?v=projektprognose">
+<script src="/static/app.js?v=projektprognose" defer></script>
 </head>
 <body>
 <main class="shell">
@@ -86,6 +86,16 @@
         <div class="fields"><label>Fragen<select id="rounds"><option>5</option><option selected>10</option><option>15</option></select></label><label>Zeit pro Frage<select id="seconds"><option value="10">10 Sek.</option><option value="15" selected>15 Sek.</option><option value="20">20 Sek.</option><option value="30">30 Sek.</option></select></label></div>
         <label>Pause zwischen Fragen<select id="pause"><option value="3">3 Sek.</option><option value="5" selected>5 Sek.</option><option value="8">8 Sek.</option><option value="10">10 Sek.</option><option value="15">15 Sek.</option></select></label>
         <label>Gefragt wird nach<select id="direction"><option value="mixed">Floskeln und Bedeutungen</option><option value="term">Der passenden Floskel</option><option value="meaning">Der passenden Bedeutung</option></select></label>
+        <div class="project-forecast" aria-live="polite" aria-atomic="true">
+          <h3>Projektprognose</h3>
+          <dl>
+            <div>
+              <dt>Projektlaufzeit</dt><dd><span id="forecast-timeline"></span><span class="forecast-track" aria-hidden="true"><span id="forecast-bar"></span></span></dd>
+            </div>
+            <div><dt>Entscheidungstempo</dt><dd id="forecast-speed"></dd></div>
+            <div><dt>Pausenprogramm</dt><dd id="forecast-break"></dd></div>
+          </dl>
+        </div>
         <button class="primary">Quiz erstellen <span aria-hidden="true">↗</span></button>
         <p id="create-progress" role="status" hidden></p>
       </form>

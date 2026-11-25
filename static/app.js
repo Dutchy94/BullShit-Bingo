@@ -215,6 +215,33 @@ function connect() {
   };
 }
 
+const forecastTimeline = {
+  5: {text: "2 Wochen. Läuft als Quick Win.", bar: 14},
+  10: {text: "18 Monate. Der Lenkungskreis tagt monatlich.", bar: 54},
+  15: {text: "Go-live 2042. Vorbehaltlich der Druckerfreigabe.", bar: 100}
+};
+const forecastSpeed = {
+  10: "Entscheidung per Zuruf. Das Protokoll wird nachgereicht.",
+  15: "Kurz abstimmen. Die Hälfte war noch auf stumm.",
+  20: "Genug Zeit für einen Deep Dive auf Folie 2.",
+  30: "Strategische Bedenkzeit. Bitte vorher alle Stakeholder abholen."
+};
+const forecastBreak = {
+  3: "Ein Schluck Kaffee. Die Tasse bleibt oben.",
+  5: "Mikropause. Teams zeigt dich weiterhin als verfügbar.",
+  8: "Kurz zum Drucker. Papierstau ist eingeplant.",
+  10: "Kaffee holen. Rückkehr nach Rücksprache.",
+  15: "Breakout-Session zur Optimierung der nächsten Pause."
+};
+
+function updateForecast() {
+  const timeline = forecastTimeline[$("rounds").value];
+  $("forecast-timeline").textContent = timeline.text;
+  $("forecast-bar").style.width = timeline.bar + "%";
+  $("forecast-speed").textContent = forecastSpeed[$("seconds").value];
+  $("forecast-break").textContent = forecastBreak[$("pause").value];
+}
+
 const reportReplies = {
   decisions: [
     "Beschluss vertagt. Die Folie bleibt im Deck.",
@@ -337,6 +364,10 @@ for (const action of ["next", "reveal", "finish"]) {
 }
 
 if (!code) {
+  updateForecast();
+  for (const id of ["rounds", "seconds", "pause"]) {
+    $(id).addEventListener("change", updateForecast);
+  }
   $("home").hidden = false;
   api("ranking").then((players) => renderRanking("overall", players, "", true)).catch((failure) => error(failure.message));
 } else if (hostToken && !host && !beam) {
