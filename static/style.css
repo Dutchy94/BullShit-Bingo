@@ -259,3 +259,23 @@ main{padding-bottom:3rem!important}h1,h2,p{margin:0}h1{font-size:clamp(2rem,5.6v
   .project-sheet { top: .25rem; right: calc(50% + 4rem); }
   .calendar-sheet { top: 13.5rem; left: calc(50% + 2.25rem); }
 }
+
+.board-ranking .rank-group-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: .2rem .8rem;
+  margin: .55rem 0 0;
+  padding: .55rem .65rem;
+  border-top: 1px solid var(--report-rule);
+  background: #eae6da;
+  font-size: .92rem;
+}
+.board-ranking .rank-group-heading:first-child {
+  background: #ede1d4;
+  border-color: var(--report-accent);
+  color: var(--report-accent);
+}
+.rank-group-heading span { font-size: .8rem; font-weight: 500; }
+.board-ranking .rank-group-heading + .rank { border-top: 0; }

@@ -17,6 +17,13 @@ const titles = [
   "Head of Meetings über Meetings"
 ];
 
+const rankingGroups = [
+  {max: 3, title: "Management", range: "Platz 1–3"},
+  {max: 6, title: "Kernkompetenz", range: "Platz 4–6"},
+  {max: 10, title: "Arbeitskreis ohne Auftrag", range: "Platz 7–10"},
+  {max: Infinity, title: "Hoch befördern", range: "Ab Platz 11"}
+];
+
 function element(tag, text, className) {
   const node = document.createElement(tag);
   node.textContent = text;
@@ -52,7 +59,8 @@ function form(id, handler) {
 
 function renderRanking(target, players, you, global = false) {
   let place = 0;
-  const rows = players.map((player, index) => {
+  let previousGroup;
+  const rows = players.flatMap((player, index) => {
     const prior = players[index - 1];
     if (!prior || prior.points !== player.points || prior.correct !== player.correct) place = index + 1;
     const mine = Boolean(you && player.id === you);
@@ -66,7 +74,13 @@ function renderRanking(target, players, you, global = false) {
     }
     row.append(element("span", String(place) + "."), info,
       element("strong", player.points.toLocaleString("de-DE") + " Pkt.", "points"));
-    return row;
+    if (!global) return [row];
+    const group = rankingGroups.find(({max}) => place <= max);
+    if (group === previousGroup) return [row];
+    previousGroup = group;
+    const heading = element("h3", group.title, "rank-group-heading");
+    heading.append(element("span", group.range));
+    return [heading, row];
   });
   $(target).replaceChildren(...(rows.length ? rows : [
     element("p", global ? "Hier erscheinen die ersten Ergebnisse nach Quizende." : "Es ist noch niemand beigetreten.")
