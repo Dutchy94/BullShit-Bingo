@@ -197,7 +197,7 @@ main{padding-bottom:3rem!important}h1,h2,p{margin:0}h1{font-size:clamp(2rem,5.6v
   transform: translateY(-50%) rotate(-11deg) scale(var(--sheet-scale));
 }
 .calendar-sheet {
-  top: 9rem;
+  top: 12%;
   left: calc(50% + 24rem);
   transform-origin: right center;
   transform: rotate(10deg) scale(var(--sheet-scale));
@@ -251,30 +251,61 @@ main{padding-bottom:3rem!important}h1,h2,p{margin:0}h1{font-size:clamp(2rem,5.6v
   text-decoration: underline wavy;
   text-underline-offset: .21em;
 }
+.pdca-sheet {
+  top: 80%;
+  left: calc(50% + 22rem);
+  transform-origin: right center;
+  transform: translateY(-50%) rotate(8deg) scale(var(--sheet-scale));
+}
 .pdca {
-  margin-top: .85rem;
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  align-items: center;
+  gap: .85rem;
   padding-top: .6rem;
   border-top: 1px solid #bfb8a3;
 }
-.pdca dl { margin: .25rem 0 0; font-size: .68rem; }
-.pdca dl > div {
+.pdca-wheel {
+  position: relative;
   display: grid;
-  grid-template-columns: 2.6rem 1fr;
-  gap: .35rem;
-  padding: .16rem 0;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  place-items: center;
+  width: 8rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid #a29c87;
+  background: conic-gradient(#e9bcb1 0 25%, #e5dfc8 25% 50%, #dce1c7 50% 75%, #e5dfc8 75% 100%);
+  font-size: .72rem;
+  font-weight: 750;
 }
-.pdca dt { font-weight: 750; }
-.pdca dd { margin: 0; }
+.pdca-wheel span:nth-child(2) { color: #962c22; }
+.pdca-wheel b {
+  position: absolute;
+  inset: 34%;
+  display: grid;
+  place-items: center;
+  border: 1px solid #a29c87;
+  border-radius: 50%;
+  background: #faf5e6;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+.pdca dl { margin: 0; font-size: .68rem; }
+.pdca dl > div { padding: .16rem 0; }
+.pdca dt { display: inline; font-weight: 750; }
+.pdca dd { display: inline; margin: 0 0 0 .3rem; }
 .pdca-blocked { color: #962c22; font-weight: 750; }
 @media (max-width: 1150px) {
   .desk-sheet { --sheet-scale: 1.2; opacity: .19; }
   .project-sheet { right: calc(50% + 20rem); }
-  .calendar-sheet { left: calc(50% + 18rem); }
+  .calendar-sheet, .pdca-sheet { left: calc(50% + 18rem); }
 }
 @media (max-width: 740px) {
   .desk-sheet { --sheet-scale: 1.16; opacity: .14; }
   .project-sheet { right: calc(50% + 4rem); }
-  .calendar-sheet { top: 13.5rem; left: calc(50% + 2.25rem); }
+  .calendar-sheet { left: calc(50% + 2.25rem); }
+  .pdca-sheet { left: calc(50% + 1.25rem); }
 }
 
 .board-ranking .rank-group-heading {

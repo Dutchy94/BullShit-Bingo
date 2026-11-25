@@ -29,7 +29,7 @@ Die Rangliste einer Runde zeigt die erspielten Rundenpunkte. Bei gleicher Punktz
 
 Die mitgelieferte Liste steht in [begriffe.md](begriffe.md). Über **Neue Floskel hinzufügen** auf der Startseite kannst du den gemeinsamen Fragenpool um eine Floskel und ihre Bedeutung ergänzen. Die neuen Begriffe werden dauerhaft gespeichert.
 
-Der Hintergrund zeigt zwei beispielhafte Unterlagen aus dem Lenkungskreis. Der Projektplan reicht bis 2042, und die Druckerpatronen-Strategie hat einen eigenen Kalendereintrag.
+Im Hintergrund liegen drei Unterlagen aus dem Lenkungskreis. Der Projektplan reicht bis 2042, die Druckerpatronen-Strategie hat ihren eigenen Kalendereintrag und im PDCA-Zyklus wartet „Do“ auf Freigabe.
 
 ## Docker-Betrieb
 
