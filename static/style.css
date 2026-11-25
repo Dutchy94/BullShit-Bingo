@@ -166,3 +166,96 @@ main{padding-bottom:3rem!important}h1,h2,p{margin:0}h1{font-size:clamp(2rem,5.6v
   .campaign h1 { font-size: 2.15rem; }
   .home-panel .fields, #enter { grid-template-columns: 1fr; }
 }
+
+/* Meeting papers on the landing page */
+#home { position: relative; isolation: isolate; }
+.desk-notes {
+  position: absolute;
+  z-index: -1;
+  inset: 0 50% auto;
+  width: 100vw;
+  height: 35rem;
+  transform: translateX(-50%);
+  overflow: hidden;
+  pointer-events: none;
+}
+.desk-sheet {
+  position: absolute;
+  box-sizing: border-box;
+  width: 25rem;
+  padding: 1.25rem;
+  border: 1px solid #a29c87;
+  background: #faf5e6;
+  color: #433e32;
+  opacity: .46;
+}
+.project-sheet {
+  top: 1.5rem;
+  right: calc(50% + 22.5rem);
+  width: 21.5rem;
+  transform: rotate(-11deg);
+}
+.calendar-sheet {
+  top: 9rem;
+  left: calc(50% + 24rem);
+  transform: rotate(10deg);
+}
+.desk-sheet-label {
+  font: 750 .63rem system-ui, sans-serif;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.desk-sheet-title { margin: .35rem 0 .8rem; font: 1.45rem Georgia, serif; }
+.project-dates {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 7.1rem;
+  padding-bottom: .2rem;
+  font-size: .66rem;
+}
+.project-rows > div {
+  display: grid;
+  grid-template-columns: 7.1rem repeat(13, minmax(0, 1fr));
+  align-items: center;
+  min-height: 1.4rem;
+  border-top: 1px solid #bfb8a3;
+  font-size: .66rem;
+}
+.project-rows i {
+  grid-column: calc(2 + var(--start)) / span var(--span);
+  height: .42rem;
+  margin-inline: .1rem;
+  background: #727b5d;
+}
+.project-rows > div:last-child i { background: #9a392b; }
+.calendar-days { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.calendar-days > div { border-top: 1px solid #bfb8a3; border-left: 1px solid #bfb8a3; padding: .22rem; }
+.calendar-days > div:last-child { border-right: 1px solid #bfb8a3; }
+.calendar-days b { display: block; margin-bottom: .2rem; font-size: .72rem; }
+.calendar-days p {
+  margin-bottom: .24rem;
+  padding: .24rem;
+  min-height: 3.5rem;
+  background: #e5dfc8;
+  font-size: .62rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.calendar-days time { display: block; font-weight: 750; }
+.desk-note {
+  margin-top: .58rem;
+  color: #962c22;
+  font: italic .9rem Georgia, serif;
+  text-decoration: underline wavy;
+  text-underline-offset: .21em;
+}
+@media (max-width: 1150px) {
+  .desk-sheet { opacity: .22; }
+  .project-sheet { right: calc(50% + 20rem); }
+  .calendar-sheet { left: calc(50% + 18rem); }
+}
+@media (max-width: 740px) {
+  .desk-sheet { opacity: .16; }
+  .project-sheet { top: .25rem; right: calc(50% + 4rem); }
+  .calendar-sheet { top: 13.5rem; left: calc(50% + 2.25rem); }
+}
