@@ -172,9 +172,8 @@ main{padding-bottom:3rem!important}h1,h2,p{margin:0}h1{font-size:clamp(2rem,5.6v
 .desk-notes {
   position: absolute;
   z-index: -1;
-  inset: 0 50% auto;
+  inset: 0 auto 0 50%;
   width: 100vw;
-  height: 45rem;
   transform: translateX(-50%);
   overflow: hidden;
   pointer-events: none;
@@ -191,11 +190,11 @@ main{padding-bottom:3rem!important}h1,h2,p{margin:0}h1{font-size:clamp(2rem,5.6v
   opacity: .46;
 }
 .project-sheet {
-  top: 4.5rem;
+  top: 50%;
   right: calc(50% + 22.5rem);
   width: 21.5rem;
   transform-origin: left center;
-  transform: rotate(-11deg) scale(var(--sheet-scale));
+  transform: translateY(-50%) rotate(-11deg) scale(var(--sheet-scale));
 }
 .calendar-sheet {
   top: 9rem;
@@ -274,7 +273,7 @@ main{padding-bottom:3rem!important}h1,h2,p{margin:0}h1{font-size:clamp(2rem,5.6v
 }
 @media (max-width: 740px) {
   .desk-sheet { --sheet-scale: 1.16; opacity: .14; }
-  .project-sheet { top: 2.25rem; right: calc(50% + 4rem); }
+  .project-sheet { right: calc(50% + 4rem); }
   .calendar-sheet { top: 13.5rem; left: calc(50% + 2.25rem); }
 }
 
