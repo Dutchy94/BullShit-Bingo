@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#171514">
+<title>Bullshit Bingo Monday</title>
+<link rel="stylesheet" href="/static/style.css">
+<script src="/static/app.js" defer></script>
+</head>
+<body>
+<header><a href="/" class="brand"><span class="logo">✳</span> BULLSHIT BINGO</a><span id="connection" class="connection" hidden></span></header>
+<main>
+<section class="hero">
+<div class="hero-copy">
+  <p class="eyebrow">Das Meeting-Spiel</p>
+  <h1>Bullshit Bingo<br><em>Monday.</em></h1>
+  <p id="intro">Markiere gefallene Floskeln und hol dir mit einer vollen Reihe, Spalte oder Diagonale ein Bingo.</p>
+</div>
+<figure class="sample" aria-label="Beispiel für ein Bingo: Die Diagonale ist vollständig markiert">
+  <div class="sample-grid" aria-hidden="true">
+    <span class="hit">Quick Win</span><span>Alignment</span><span>Roadmap</span>
+    <span>SteerCo</span><span class="hit">Synergien</span><span>Deep Dive</span>
+    <span>Buy-in</span><span>Scope</span><span class="hit">Follow-up</span>
+  </div>
+  <figcaption>✦ Bingo! Können wir so mitnehmen.</figcaption>
+</figure>
+</section>
+<p id="error" role="alert" hidden></p>
+<section id="lobby" class="layout" hidden>
+  <article class="panel"><h2>Runde erstellen</h2><form id="create">
+  <label>Spielfeld<select id="create-size"><option value="3">3 × 3 · Kurzmeeting</option><option value="4">4 × 4 · Workshop</option><option value="5" selected>5 × 5 · Klassiker</option></select></label>
+  <button class="primary">Runde erstellen ↗</button></form></article>
+  <article class="panel"><h2>Runde beitreten</h2><form id="enter">
+  <label>Spielcode<input id="code" required minlength="5" maxlength="5" pattern="[A-Za-z0-9]{5}" placeholder="QWV42" autocomplete="off"></label>
+  <button>Weiter →</button></form></article>
+</section>
+<section id="room" hidden>
+  <div class="room-bar"><div><span class="eyebrow">Spielcode</span><strong id="room-code"></strong></div><span id="status" class="pill"></span><button id="share" type="button">Einladungslink kopieren</button><a id="live" class="button" target="_blank" rel="noopener">Beamer-Ansicht ↗</a></div>
+  <div class="layout game">
+    <div class="stack" id="play">
+      <article class="panel" id="join-panel" hidden><h2>Mitspielen</h2><form id="join"><label>Dein Name<input id="name" maxlength="40" required autocomplete="nickname"></label><button class="primary">Spielfeld holen</button></form></article>
+      <article class="panel" id="card-panel" hidden><div class="heading"><h2>Dein Spielfeld</h2><span id="personal"></span></div><div id="card"></div><p id="meaning" aria-live="polite"></p></article>
+    </div>
+    <aside class="panel ranking"><div class="heading"><h2>Ranking</h2><span id="count"></span></div><p id="leader"></p><div id="ranking"></div></aside>
+  </div>
+  <details id="host" class="panel" hidden><summary>Runde verwalten</summary>
+    <div class="actions"><button class="primary" data-action="start">Starten / fortsetzen</button><button data-action="pause">Pausieren</button><button data-action="reset">Zurücksetzen</button><button data-action="new">Neue Karten ziehen</button></div>
+    <div class="layout settings">
+      <form id="settings"><h2>Spieleinstellungen</h2><label>Spielfeld<select id="size"><option value="3">3 × 3 · Kurzmeeting</option><option value="4">4 × 4 · Workshop</option><option value="5">5 × 5 · Klassiker</option></select></label>
+       <details><summary id="selected">Floskeln auswählen</summary><input id="filter" aria-label="Floskeln filtern" placeholder="Floskeln suchen"><div class="actions"><button id="select-all" type="button">Alle</button><button id="select-none" type="button">Keine</button></div><div id="terms"></div></details>
+       <button>Einstellungen speichern</button><small>Vor dem Start verfügbar. Beim Speichern werden die Karten neu gezogen.</small></form>
+      <form id="add"><h2>Neue Floskel</h2><label>Floskel<input id="term" required maxlength="70"></label><label>Was heißt das eigentlich?<textarea id="translation" required maxlength="240"></textarea></label><button>Floskel hinzufügen</button><small id="added" role="status"></small></form>
+    </div>
+  </details>
+</section>
+</main>
+</body></html>

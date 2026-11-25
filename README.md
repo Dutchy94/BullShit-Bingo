@@ -469,3 +469,19 @@ Wenn schon jemand sagt:
 **„Wir müssen hier einen Deep Dive machen, um ein gemeinsames Alignment für die strategische Roadmap zu schaffen.“**
 
 … dann sollte wenigstens jemand Punkte dafür bekommen. 😄
+
+## Aktueller Betrieb
+
+`docker compose up -d --build --wait` startet die Anwendung auf
+`127.0.0.1:18092`. Caddy leitet HTTPS und WebSockets für
+`bingo.schuelting-develop.de` dorthin weiter. Der Healthcheck ist unter
+`/health` erreichbar.
+
+Runden, Karten und neue Floskeln liegen in SQLite im Docker-Volume
+`game-data`. Uvicorn läuft mit einem Worker, damit alle WebSocket-Verbindungen
+Updates über denselben Prozess erhalten.
+
+Der Host kann rundenweise ein 3×3-, 4×4- oder 5×5-Feld wählen, den Begriffspool
+ändern und neue Floskeln hinzufügen. Der Browser speichert den Zugang zur
+Runde und gegebenenfalls die Host-Rechte. Über den Einladungslink können
+weitere Personen beitreten. Die Beamer-Ansicht zeigt das Ranking live.
