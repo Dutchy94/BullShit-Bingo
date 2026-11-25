@@ -174,7 +174,7 @@ main{padding-bottom:3rem!important}h1,h2,p{margin:0}h1{font-size:clamp(2rem,5.6v
   z-index: -1;
   inset: 0 50% auto;
   width: 100vw;
-  height: 41rem;
+  height: 45rem;
   transform: translateX(-50%);
   overflow: hidden;
   pointer-events: none;
@@ -252,6 +252,21 @@ main{padding-bottom:3rem!important}h1,h2,p{margin:0}h1{font-size:clamp(2rem,5.6v
   text-decoration: underline wavy;
   text-underline-offset: .21em;
 }
+.pdca {
+  margin-top: .85rem;
+  padding-top: .6rem;
+  border-top: 1px solid #bfb8a3;
+}
+.pdca dl { margin: .25rem 0 0; font-size: .68rem; }
+.pdca dl > div {
+  display: grid;
+  grid-template-columns: 2.6rem 1fr;
+  gap: .35rem;
+  padding: .16rem 0;
+}
+.pdca dt { font-weight: 750; }
+.pdca dd { margin: 0; }
+.pdca-blocked { color: #962c22; font-weight: 750; }
 @media (max-width: 1150px) {
   .desk-sheet { --sheet-scale: 1.2; opacity: .19; }
   .project-sheet { right: calc(50% + 20rem); }
