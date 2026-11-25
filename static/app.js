@@ -9,6 +9,13 @@ const hostToken = code ? localStorage.getItem("quiz-host:" + code) : "";
 const host = route === "host" && Boolean(hostToken);
 let playerToken = code ? localStorage.getItem("quiz-player:" + code) : "";
 let socket, snapshot, pending = false, clockOffset = 0, choiceKey = "";
+const titles = [
+  "Top Manager für heiße Luft",
+  "Scrum Master fürs Stuhlkreis-Alignment",
+  "Chief Officer für betreutes Nicken",
+  "VP für Folien ohne Entscheidung",
+  "Head of Meetings über Meetings"
+];
 
 function element(tag, text, className) {
   const node = document.createElement(tag);
@@ -53,7 +60,10 @@ function renderRanking(target, players, you, global = false) {
     const info = element("div", "");
     const games = player.games === 1 ? "1 Quiz" : player.games + " Quizrunden";
     info.append(element("strong", player.name + (mine ? " · Du" : "")),
-      element("small", player.correct + " richtig" + (global ? " · " + games : "")));
+      element("small", global ? player.correct + " % richtig · " + games : player.correct + " richtig"));
+    if (titles[place - 1] && (global || snapshot.status !== "lobby")) {
+      info.append(element("small", titles[place - 1], "rank-title-label"));
+    }
     row.append(element("span", String(place) + "."), info,
       element("strong", player.points.toLocaleString("de-DE") + " Pkt.", "points"));
     return row;
@@ -65,10 +75,13 @@ function renderRanking(target, players, you, global = false) {
 
 function tick() {
   if (!snapshot?.question) return;
-  const seconds = snapshot.status === "question"
-    ? Math.max(0, snapshot.question.deadline - Date.now() / 1000 - clockOffset) : 0;
-  $("timer").textContent = snapshot.status === "question" ? Math.ceil(seconds) + " Sek." : "Auflösung";
-  $("timer-bar").max = snapshot.settings.seconds;
+  const answering = snapshot.status === "question";
+  const deadline = answering ? snapshot.question.deadline : snapshot.next_at;
+  const seconds = deadline ? Math.max(0, deadline - Date.now() / 1000 - clockOffset) : 0;
+  const final = snapshot.number === snapshot.settings.rounds;
+  $("timer").textContent = answering ? Math.ceil(seconds) + " Sek."
+    : (final ? "Siegerehrung in " : "Nächste Frage in ") + Math.ceil(seconds) + " Sek.";
+  $("timer-bar").max = answering ? snapshot.settings.seconds : (snapshot.settings.pause || 5);
   $("timer-bar").value = seconds;
   if (seconds === 0) {
     $("choices").querySelectorAll("button").forEach((button) => { button.disabled = true; });
@@ -111,7 +124,6 @@ function render(data) {
   $("room").hidden = false;
   const lobby = data.status === "lobby";
   const finished = data.status === "finished";
-  const finalQuestion = data.number >= data.settings.rounds;
   const questionOpen = data.status === "question";
   const observer = host || beam;
   const signedIn = Boolean(data.you);
@@ -124,17 +136,28 @@ function render(data) {
   $("custom").hidden = !host;
   if (!$("question-panel").hidden) renderQuestion(data);
   if (finished) {
-    const lead = data.ranking[0];
-    const winners = lead ? data.ranking.filter((p) => p.points === lead.points && p.correct === lead.correct) : [];
-    $("winner").textContent = lead
-      ? winners.map((player) => player.name).join(", ") + " · " + lead.points + " Punkte"
-      : "In dieser Runde wurden keine Punkte gesammelt.";
+    const winners = data.winners;
+    $("award-title").textContent = winners.length ? "Daily Sprint Master" : "Meeting beendet";
+    $("award-note").hidden = !winners.length;
+    $("finished").classList.toggle("celebrating", winners.length > 0);
+    $("winner").textContent = winners.length
+      ? winners.map((player) => player.name).join(" & ") + " · " + winners[0].points + " Rundenpunkte"
+      : "In dieser Runde wurde keine Antwort abgegeben.";
+    if (winners.length && !$("confetti").childElementCount) {
+      for (let i = 0; i < 28; i++) {
+        const piece = element("i", "");
+        piece.style.setProperty("--x", (i * 37 % 100) + "%");
+        piece.style.setProperty("--delay", (i % 7) * 0.09 + "s");
+        piece.style.setProperty("--hue", String(i * 61 % 360));
+        $("confetti").append(piece);
+      }
+    }
   }
-  $("next").hidden = questionOpen;
+  $("next").hidden = !lobby;
   $("next").disabled = !data.ranking.length;
-  $("next").textContent = lobby ? "Erste Frage starten" : finalQuestion ? "Ergebnis veröffentlichen" : "Nächste Frage";
+  $("next").textContent = "Quiz starten";
   $("reveal").hidden = !questionOpen;
-  $("finish").hidden = lobby || (finalQuestion && !questionOpen);
+  $("finish").hidden = lobby;
   $("answers-count").textContent = lobby ? "" : data.answered + " / " + data.ranking.length + " haben geantwortet";
   $("count").textContent = data.ranking.length + (data.ranking.length === 1 ? " Person" : " Personen");
   renderRanking("ranking", data.ranking, data.you);
@@ -180,7 +203,8 @@ function connect() {
 
 form("create", async () => {
   const data = await api("quizzes", {
-    rounds: Number($("rounds").value), seconds: Number($("seconds").value), direction: $("direction").value
+    rounds: Number($("rounds").value), seconds: Number($("seconds").value),
+    pause: Number($("pause").value), direction: $("direction").value
   });
   localStorage.setItem("quiz-host:" + data.code, data.token);
   location.assign("/host/" + data.code);
@@ -197,6 +221,12 @@ form("join", async () => {
   localStorage.setItem("quiz-player:" + code, playerToken);
   connect();
 });
+form("add-home", async () => {
+  const data = await api("terms", {term: $("home-term").value, meaning: $("home-meaning").value});
+  $("add-home").reset();
+  $("home-added").textContent = "Im Quiz-Pool gespeichert: " + data.term;
+  $("home-added").hidden = false;
+});
 form("add", async () => {
   const data = await api(base + "/terms", {
     token: hostToken, term: $("term").value, meaning: $("meaning").value
@@ -206,7 +236,7 @@ form("add", async () => {
 });
 for (const action of ["next", "reveal", "finish"]) {
   $(action).onclick = async () => {
-    if (action === "finish" && !confirm("Dieses Quiz beenden und das Ergebnis veröffentlichen?")) return;
+    if (action === "finish" && !confirm("Quiz abbrechen? Diese Runde zählt dann nicht für die Gesamtwertung.")) return;
     const button = $(action);
     button.disabled = true;
     error();

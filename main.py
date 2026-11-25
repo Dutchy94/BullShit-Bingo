@@ -3,6 +3,7 @@ import json
 import random
 import secrets
 import time
+from contextlib import asynccontextmanager, suppress
 from io import BytesIO
 
 import qrcode
@@ -16,7 +17,21 @@ from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app):
+    active.update(code for code, in db.execute(
+        "SELECT code FROM quizzes WHERE json_extract(state, '$.status') IN ('question', 'reveal')"
+    ))
+    runner = asyncio.create_task(run_quizzes())
+    try:
+        yield
+    finally:
+        runner.cancel()
+        with suppress(asyncio.CancelledError):
+            await runner
+
+
+app = FastAPI(lifespan=lifespan)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 words = dict(
     tuple(cell.strip() for cell in line.strip("|").split("|", 1))
@@ -29,6 +44,7 @@ db.execute("CREATE TABLE IF NOT EXISTS custom_terms (term TEXT PRIMARY KEY, mean
 words.update(db.execute("SELECT term, meaning FROM custom_terms"))
 db.commit()
 updates = {}
+active = set()
 
 
 ORIGIN = "https://bingo.schuelting-develop.de"
@@ -45,6 +61,7 @@ class Settings(BaseModel):
     rounds: Literal[5, 10, 15] = 10
     seconds: Literal[10, 15, 20, 30] = 15
     direction: Literal["meaning", "term", "mixed"] = "mixed"
+    pause: Literal[3, 5, 8, 10, 15] = 5
 
 
 class Join(BaseModel):
@@ -64,9 +81,12 @@ class Answer(BaseModel):
 
 
 class CustomTerm(BaseModel):
-    token: str
     term: str = Field(min_length=1, max_length=70)
     meaning: str = Field(min_length=1, max_length=240)
+
+
+class HostTerm(CustomTerm):
+    token: str
 
 
 def load(code):
@@ -79,6 +99,10 @@ def load(code):
 def save(code, game):
     with db:
         db.execute("INSERT OR REPLACE INTO quizzes VALUES (?, ?)", (code, json.dumps(game)))
+    if game["status"] in ("question", "reveal"):
+        active.add(code)
+    else:
+        active.discard(code)
     event = updates.get(code)
     if event:
         updates[code] = asyncio.Event()
@@ -90,10 +114,27 @@ def authorize(game, token):
         raise HTTPException(403, "Nur die Spielleitung darf das.")
 
 
-def phase(game, now):
-    if game["status"] == "question" and now >= game["question"]["deadline"]:
-        return "reveal"
-    return game["status"]
+def reveal(game, now):
+    game["status"] = "reveal"
+    game["next_at"] = now + game["settings"].get("pause", 5)
+
+
+async def run_quizzes():
+    while True:
+        for code in tuple(active):
+            game = load(code)
+            now = time.time()
+            if game["status"] == "question" and now >= game["question"]["deadline"]:
+                reveal(game, now)
+            elif game["status"] == "reveal" and now >= game.get("next_at", 0):
+                if len(game["used"]) == game["settings"]["rounds"]:
+                    game.update(status="finished", completed=True)
+                else:
+                    new_question(game)
+            else:
+                continue
+            save(code, game)
+        await asyncio.sleep(0.15)
 
 
 def rankings(players, pending_answers):
@@ -110,11 +151,19 @@ def rankings(players, pending_answers):
 
 def public(game, player=None):
     now = time.time()
-    status = phase(game, now)
+    status = game["status"]
     question = game["question"]
     pending_answers = question["answers"] if status == "question" else {}
     data = dict(status=status, settings=game["settings"], number=len(game["used"]),
                 ranking=rankings(game["players"].values(), pending_answers), now=now)
+    if status == "reveal":
+        data["next_at"] = game.get("next_at")
+    if status == "finished":
+        participants = {player["id"] for player in game["players"].values() if player["attempts"]}
+        data["ranking"] = [row for row in data["ranking"] if row["id"] in participants]
+        lead = data["ranking"][0] if data["ranking"] else None
+        data["winners"] = [row for row in data["ranking"] if (row["points"], row["correct"]) ==
+                           (lead["points"], lead["correct"])] if lead else []
     if player:
         data["you"] = player["id"]
     if question:
@@ -137,7 +186,7 @@ def new_question(game):
         pool = list(dict.fromkeys(words.values()))
     else:
         prompt, label, correct = words[term], "Welche Floskel ist gemeint?", term
-        pool = list(words)
+        pool = [word for word, meaning in words.items() if meaning != prompt or word == correct]
     choices = random.sample([value for value in pool if value != correct], 3) + [correct]
     random.shuffle(choices)
     game["used"].append(term)
@@ -165,19 +214,22 @@ async def overall():
     totals = {}
     for (raw,) in db.execute("SELECT state FROM quizzes"):
         game = json.loads(raw)
-        if game["status"] != "finished":
+        questions = game["settings"]["rounds"]
+        if game["status"] != "finished" or not game.get("completed", len(game["used"]) == questions):
             continue
         for player in game["players"].values():
             if not player["attempts"]:
                 continue
             key = player["identity"]
-            entry = totals.setdefault(key, dict(id="", name=player["name"], points=0, correct=0, games=0))
-            entry.update(name=player["name"], points=entry["points"] + player["points"],
-                         correct=entry["correct"] + player["correct"], games=entry["games"] + 1)
-    return [row for _, row in sorted(
-        totals.items(),
-        key=lambda pair: (-pair[1]["points"], -pair[1]["correct"], pair[1]["name"].casefold()),
-    )][:20]
+            entry = totals.setdefault(key, dict(name=player["name"], score=0, correct_rate=0, games=0))
+            entry.update(name=player["name"], score=entry["score"] + 2 * player["points"] / questions,
+                         correct_rate=entry["correct_rate"] + player["correct"] / questions,
+                         games=entry["games"] + 1)
+    rows = [dict(name=row["name"], points=round(row["score"] / row["games"]),
+                 correct=round(100 * row["correct_rate"] / row["games"]), games=row["games"])
+            for row in totals.values()]
+    return sorted(rows, key=lambda row: (-row["points"], -row["correct"], row["name"].casefold()))[:20]
+
 
 
 @app.post("/api/quizzes", status_code=201)
@@ -225,18 +277,15 @@ async def join(code: str, body: Join):
 async def control(code: str, body: Control):
     game = load(code)
     authorize(game, body.token)
-    status = phase(game, time.time())
-    if body.action == "next" and status in ("lobby", "reveal"):
+    status = game["status"]
+    if body.action == "next" and status == "lobby":
         if not game["players"]:
             raise HTTPException(409, "Warte, bis jemand beigetreten ist.")
-        if len(game["used"]) >= game["settings"]["rounds"]:
-            game["status"] = "finished"
-        else:
-            new_question(game)
+        new_question(game)
     elif body.action == "reveal" and status == "question":
-        game["status"] = "reveal"
+        reveal(game, time.time())
     elif body.action == "finish" and status in ("question", "reveal"):
-        game["status"] = "finished"
+        game.update(status="finished", completed=False)
     else:
         raise HTTPException(409, "Diese Aktion passt gerade nicht zum Quizstand.")
     save(code, game)
@@ -250,7 +299,8 @@ async def answer(code: str, body: Answer):
     if not player:
         raise HTTPException(403, "Tritt dem Quiz zuerst bei.")
     now = time.time()
-    if phase(game, now) != "question" or body.number != len(game["used"]):
+    if (game["status"] != "question" or now >= game["question"]["deadline"]
+            or body.number != len(game["used"])):
         raise HTTPException(409, "Die Zeit für diese Frage ist abgelaufen.")
     question = game["question"]
     if player["id"] in question["answers"]:
@@ -263,13 +313,20 @@ async def answer(code: str, body: Answer):
     player["points"] += points
     player["correct"] += int(correct)
     player["attempts"] += 1
+    if len(question["answers"]) == len(game["players"]):
+        reveal(game, now)
     save(code, game)
     return result
 
 
 @app.post("/api/quizzes/{code}/terms", status_code=201)
-async def add_term(code: str, body: CustomTerm):
+async def add_host_term(code: str, body: HostTerm):
     authorize(load(code), body.token)
+    return await add_term(body)
+
+
+@app.post("/api/terms", status_code=201)
+async def add_term(body: CustomTerm):
     term, meaning = body.term.strip(), body.meaning.strip()
     if not term or not meaning:
         raise HTTPException(400, "Gib bitte Floskel und Bedeutung ein.")
@@ -294,12 +351,9 @@ async def live(socket: WebSocket, code: str):
             game = load(code)
             snapshot = public(game, game["players"].get(token))
             await socket.send_json(snapshot)
-            timeout = None
-            if snapshot["status"] == "question":
-                timeout = max(0, game["question"]["deadline"] - time.time())
             change = asyncio.create_task(event.wait())
             try:
-                await asyncio.wait({change, listener}, timeout=timeout, return_when=asyncio.FIRST_COMPLETED)
+                await asyncio.wait({change, listener}, return_when=asyncio.FIRST_COMPLETED)
             finally:
                 change.cancel()
     except HTTPException:

@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#f5f1e8">
 <title>Bullshit Bingo Monday</title>
-<link rel="stylesheet" href="/static/style.css?v=quiz">
-<script src="/static/app.js?v=quiz" defer></script>
+<link rel="stylesheet" href="/static/style.css?v=sprint">
+<script src="/static/app.js?v=sprint" defer></script>
 </head>
 <body>
 <header><div class="shell top"><a href="/" class="brand"><span aria-hidden="true">✳</span> Bullshit Bingo Monday</a><span id="connection" hidden></span></div></header>
@@ -17,12 +17,16 @@
   <div class="columns">
     <section class="panel"><h2>Quiz leiten</h2><form id="create">
       <div class="fields"><label>Fragen<select id="rounds"><option>5</option><option selected>10</option><option>15</option></select></label><label>Zeit pro Frage<select id="seconds"><option value="10">10 Sek.</option><option value="15" selected>15 Sek.</option><option value="20">20 Sek.</option><option value="30">30 Sek.</option></select></label></div>
+      <label>Pause zwischen Fragen<select id="pause"><option value="3">3 Sek.</option><option value="5" selected>5 Sek.</option><option value="8">8 Sek.</option><option value="10">10 Sek.</option><option value="15">15 Sek.</option></select></label>
       <label>Gefragt wird nach<select id="direction"><option value="mixed">Floskeln und Bedeutungen</option><option value="term">Der passenden Floskel</option><option value="meaning">Der passenden Bedeutung</option></select></label>
       <button class="primary">Quiz erstellen</button>
     </form></section>
     <section class="panel"><h2>Mitspielen</h2><form id="enter"><label>Spielcode<input id="code" required minlength="5" maxlength="5" pattern="[A-Za-z0-9]{5}" placeholder="QWV42" autocomplete="off" autocapitalize="characters"></label><button>Zum Beitritt →</button></form></section>
   </div>
-  <section class="panel overall"><h2>Gesamtwertung</h2><p class="muted">Punkte aus abgeschlossenen Quizrunden.</p><div id="overall"></div></section>
+  <details class="panel overall"><summary>Neue Floskel hinzufügen</summary>
+    <form id="add-home"><label>Floskel<input id="home-term" required maxlength="70"></label><label>Bedeutung<textarea id="home-meaning" required maxlength="240"></textarea></label><button>Floskel speichern</button><p id="home-added" role="status" hidden></p></form>
+  </details>
+  <section class="panel overall"><h2>Gesamtwertung</h2><p class="muted">Durchschnittswertung aus abgeschlossenen Quizrunden. Pro Quiz sind unabhängig von der Fragenzahl bis zu 1.000 Punkte möglich.</p><div id="overall"></div></section>
 </section>
 <section id="room" hidden>
   <div class="room-head"><div><p id="role" class="muted"></p><h1 id="room-title">Quiz</h1></div><div id="room-links"><a id="beam-link" class="button" target="_blank" rel="noopener" hidden>Beamer öffnen ↗</a></div></div>
@@ -40,8 +44,10 @@
         <div id="choices"></div><p id="feedback" role="status" hidden></p>
       </section>
       <section id="waiting" class="panel" hidden><h2>Du bist dabei.</h2><p>Die Spielleitung startet gleich das Quiz.</p></section>
-      <section id="finished" class="panel" hidden><h2>Meeting beendet.</h2><p id="winner"></p><a class="button" href="/">Zur Gesamtwertung →</a></section>
-      <section id="controls" class="panel" hidden><p id="answers-count" class="muted"></p><div class="actions"><button type="button" id="next" class="primary"></button><button type="button" id="reveal">Auflösen</button><button type="button" id="finish">Quiz beenden</button></div></section>
+      <section id="finished" class="panel" hidden>
+        <div id="confetti" aria-hidden="true"></div>
+        <p id="award-note">Meeting beendet.</p><h2 id="award-title">Daily Sprint Master</h2><p id="winner" role="status"></p><a class="button" href="/">Zur Gesamtwertung →</a></section>
+      <section id="controls" class="panel" hidden><p id="answers-count" class="muted"></p><div class="actions"><button type="button" id="next" class="primary"></button><button type="button" id="reveal">Auflösen</button><button type="button" id="finish">Quiz abbrechen</button></div></section>
       <details id="custom" class="panel" hidden><summary>Eigene Floskel hinzufügen</summary><form id="add"><label>Floskel<input id="term" required maxlength="70"></label><label>Bedeutung<textarea id="meaning" required maxlength="240"></textarea></label><button>Speichern</button><p id="added" role="status"></p></form></details>
     </div>
     <section class="panel"><div class="rank-title"><h2>Live-Ranking</h2><span id="count" class="muted"></span></div><div id="ranking"></div></section>

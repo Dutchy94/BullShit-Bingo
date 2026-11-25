@@ -479,6 +479,16 @@ zeigt dieselbe Frage und den Spielstand. Richtige Antworten bringen je nach
 Tempo 100 bis 500 Punkte, falsche Antworten kosten 100 Punkte. Die Rangliste
 wird nach jeder Auflösung aktualisiert. Abgeschlossene Quizrunden gehen in
 die Gesamtwertung ein, die einen Spieler über seinen Browser wiedererkennt.
+Dafür werden die Rundenpunkte durch die vorgesehene Fragenzahl geteilt
+und mit zwei multipliziert. Die Gesamtwertung zeigt den Durchschnitt
+dieser Werte (maximal 1.000 Punkte pro Runde). Abgebrochene Quizrunden
+werden dabei ausgelassen.
+
+Sobald alle geantwortet haben oder die Antwortzeit abläuft, zeigt das Quiz
+die Lösung und zählt die beim Erstellen gewählte Pause herunter. Danach
+startet die nächste Frage automatisch. Nach der letzten Frage erscheint
+die Siegerehrung auf allen verbundenen Ansichten. Eigene Floskeln können
+direkt auf der Startseite ergänzt werden.
 
 `docker compose up -d --build --wait` startet den Dienst auf
 `127.0.0.1:18092`. Caddy leitet HTTPS und WebSockets für
