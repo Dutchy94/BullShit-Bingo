@@ -174,12 +174,13 @@ main{padding-bottom:3rem!important}h1,h2,p{margin:0}h1{font-size:clamp(2rem,5.6v
   z-index: -1;
   inset: 0 50% auto;
   width: 100vw;
-  height: 35rem;
+  height: 41rem;
   transform: translateX(-50%);
   overflow: hidden;
   pointer-events: none;
 }
 .desk-sheet {
+  --sheet-scale: 1.24;
   position: absolute;
   box-sizing: border-box;
   width: 25rem;
@@ -193,12 +194,14 @@ main{padding-bottom:3rem!important}h1,h2,p{margin:0}h1{font-size:clamp(2rem,5.6v
   top: 1.5rem;
   right: calc(50% + 22.5rem);
   width: 21.5rem;
-  transform: rotate(-11deg);
+  transform-origin: left center;
+  transform: rotate(-11deg) scale(var(--sheet-scale));
 }
 .calendar-sheet {
   top: 9rem;
   left: calc(50% + 24rem);
-  transform: rotate(10deg);
+  transform-origin: right center;
+  transform: rotate(10deg) scale(var(--sheet-scale));
 }
 .desk-sheet-label {
   font: 750 .63rem system-ui, sans-serif;
@@ -250,12 +253,12 @@ main{padding-bottom:3rem!important}h1,h2,p{margin:0}h1{font-size:clamp(2rem,5.6v
   text-underline-offset: .21em;
 }
 @media (max-width: 1150px) {
-  .desk-sheet { opacity: .22; }
+  .desk-sheet { --sheet-scale: 1.2; opacity: .19; }
   .project-sheet { right: calc(50% + 20rem); }
   .calendar-sheet { left: calc(50% + 18rem); }
 }
 @media (max-width: 740px) {
-  .desk-sheet { opacity: .16; }
+  .desk-sheet { --sheet-scale: 1.16; opacity: .14; }
   .project-sheet { top: .25rem; right: calc(50% + 4rem); }
   .calendar-sheet { top: 13.5rem; left: calc(50% + 2.25rem); }
 }
