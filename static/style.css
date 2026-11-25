@@ -296,16 +296,42 @@ main{padding-bottom:3rem!important}h1,h2,p{margin:0}h1{font-size:clamp(2rem,5.6v
 .pdca dt { display: inline; font-weight: 750; }
 .pdca dd { display: inline; margin: 0 0 0 .3rem; }
 .pdca-blocked { color: #962c22; font-weight: 750; }
-@media (max-width: 1150px) {
+@media (min-width: 1280px) {
+  main.shell:has(#home:not([hidden])) {
+    max-width: 1200px;
+    width: calc(100% - 2 * clamp(15rem, 22vw, 30rem));
+    padding-inline: 1.25rem;
+  }
+  .campaign { gap: clamp(1.3rem, 2vw, 2.8rem); }
+  .campaign h1 { font-size: clamp(2.6rem, 3.6vw, 4.7rem); }
+  .desk-sheet {
+    --sheet-scale: 1.04;
+    width: calc(clamp(15rem, 22vw, 30rem) - 2.25rem);
+    padding: clamp(.8rem, 1.1vw, 1.25rem);
+    opacity: .64;
+  }
+  .project-sheet {
+    left: 1.1rem;
+    right: auto;
+    transform-origin: left center;
+    transform: translateY(-50%) rotate(-6deg) scale(var(--sheet-scale));
+  }
+  .calendar-sheet, .pdca-sheet { left: auto; right: 1.4rem; }
+  .calendar-sheet { transform: rotate(5deg) scale(var(--sheet-scale)); }
+  .pdca-sheet { transform: translateY(-50%) rotate(6deg) scale(var(--sheet-scale)); }
+  .pdca { grid-template-columns: clamp(5.1rem, 7.7vw, 8rem) minmax(0, 1fr); }
+  .pdca-wheel { width: 100%; }
+}
+@media (min-width: 741px) and (max-width: 1279px) {
   .desk-sheet { --sheet-scale: 1.2; opacity: .19; }
-  .project-sheet { right: calc(50% + 20rem); }
-  .calendar-sheet, .pdca-sheet { left: calc(50% + 18rem); }
+  .project-sheet { right: calc(50% + 21rem); }
+  .calendar-sheet, .pdca-sheet { left: calc(50% + 20rem); }
 }
 @media (max-width: 740px) {
   .desk-sheet { --sheet-scale: 1.16; opacity: .14; }
-  .project-sheet { right: calc(50% + 4rem); }
-  .calendar-sheet { left: calc(50% + 2.25rem); }
-  .pdca-sheet { left: calc(50% + 1.25rem); }
+  .project-sheet { right: calc(50% + 4.75rem); }
+  .calendar-sheet { left: calc(50% + 3rem); }
+  .pdca-sheet { left: calc(50% + 2rem); }
 }
 
 .board-ranking .rank-group-heading {
