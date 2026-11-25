@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#f5f1e8">
-<title>Bullshit Bingo Monday</title>
-<link rel="stylesheet" href="/static/style.css?v=sprint">
+<title>Bullshit Bingo Monday · Abteilung für strategische Floskeln</title>
+<meta name="description" content="Das Live-Quiz für alle, die in Meetings schon mal eine Synergie gehoben haben. Per QR-Code mitspielen und Daily Sprint Master werden.">
+<link rel="stylesheet" href="/static/style.css?v=boardroom">
 <script src="/static/app.js?v=sprint" defer></script>
 </head>
 <body>
@@ -13,20 +14,53 @@
 <main class="shell">
 <p id="error" role="alert" hidden></p>
 <section id="home" hidden>
-  <div class="intro"><h1>Floskel gehört.<br><em>Was heißt das?</em></h1><p>Vier Antworten, eine richtige. Je schneller du richtig liegst, desto mehr Punkte gibt’s. Wer danebenliegt, bekommt −100 Punkte und einen Spruch fürs nächste Meeting.</p></div>
-  <div class="columns">
-    <section class="panel"><h2>Quiz leiten</h2><form id="create">
-      <div class="fields"><label>Fragen<select id="rounds"><option>5</option><option selected>10</option><option>15</option></select></label><label>Zeit pro Frage<select id="seconds"><option value="10">10 Sek.</option><option value="15" selected>15 Sek.</option><option value="20">20 Sek.</option><option value="30">30 Sek.</option></select></label></div>
-      <label>Pause zwischen Fragen<select id="pause"><option value="3">3 Sek.</option><option value="5" selected>5 Sek.</option><option value="8">8 Sek.</option><option value="10">10 Sek.</option><option value="15">15 Sek.</option></select></label>
-      <label>Gefragt wird nach<select id="direction"><option value="mixed">Floskeln und Bedeutungen</option><option value="term">Der passenden Floskel</option><option value="meaning">Der passenden Bedeutung</option></select></label>
-      <button class="primary">Quiz erstellen</button>
-    </form></section>
-    <section class="panel"><h2>Mitspielen</h2><form id="enter"><label>Spielcode<input id="code" required minlength="5" maxlength="5" pattern="[A-Za-z0-9]{5}" placeholder="QWV42" autocomplete="off" autocapitalize="characters"></label><button>Zum Beitritt →</button></form></section>
+  <div class="campaign">
+    <div class="campaign-copy">
+      <p class="campaign-label">Abteilung für strategische Floskeln</p>
+      <h1>Maximale Synergie.<br><em>Minimale Substanz.</em></h1>
+      <p class="campaign-lead">Das Live-Quiz für alle, die schon mal einen Quick Win in einen dreistündigen Workshop verwandelt haben. Errate, was im Meeting eigentlich gemeint war, und arbeite dich zum Daily Sprint Master hoch.</p>
+      <nav class="campaign-actions" aria-label="Zum Quiz">
+        <a class="button campaign-primary" href="#quiz-leiten">Quiz leiten <span aria-hidden="true">↗</span></a>
+        <a class="button campaign-secondary" href="#mitspielen">Mit Spielcode beitreten <span aria-hidden="true">↓</span></a>
+      </nav>
+    </div>
+    <figure class="board-report">
+      <figcaption><span>Aus dem Monatsbericht</span><strong>Projektfortschritt</strong></figcaption>
+      <div class="report-data">
+        <div><span>Kick-off geplant</span><strong>100 %</strong><i style="--bar:100%" aria-hidden="true"></i></div>
+        <div><span>Folien fertig</span><strong>90 %</strong><i style="--bar:90%" aria-hidden="true"></i></div>
+        <div><span>Stakeholder aligned</span><strong>60 %</strong><i style="--bar:60%" aria-hidden="true"></i></div>
+        <div><span>Entscheidung getroffen</span><strong>0 %</strong><i style="--bar:0%" aria-hidden="true"></i></div>
+      </div>
+      <p>Stand heute. Nächster Schritt: ein Termin zur Terminfindung.</p>
+    </figure>
   </div>
-  <details class="panel overall"><summary>Neue Floskel hinzufügen</summary>
-    <form id="add-home"><label>Floskel<input id="home-term" required maxlength="70"></label><label>Bedeutung<textarea id="home-meaning" required maxlength="240"></textarea></label><button>Floskel speichern</button><p id="home-added" role="status" hidden></p></form>
-  </details>
-  <section class="panel overall"><h2>Gesamtwertung</h2><p class="muted">Durchschnittswertung aus abgeschlossenen Quizrunden. Pro Quiz sind unabhängig von der Fragenzahl bis zu 1.000 Punkte möglich.</p><div id="overall"></div></section>
+  <div class="home-grid">
+    <section class="panel home-panel host-panel" id="quiz-leiten">
+      <h2>Quiz leiten</h2><p class="home-description">Runde am PC starten, QR-Code zeigen und den Beamer für den Rest der Abteilung freigeben.</p>
+      <form id="create">
+        <div class="fields"><label>Fragen<select id="rounds"><option>5</option><option selected>10</option><option>15</option></select></label><label>Zeit pro Frage<select id="seconds"><option value="10">10 Sek.</option><option value="15" selected>15 Sek.</option><option value="20">20 Sek.</option><option value="30">30 Sek.</option></select></label></div>
+        <label>Pause zwischen Fragen<select id="pause"><option value="3">3 Sek.</option><option value="5" selected>5 Sek.</option><option value="8">8 Sek.</option><option value="10">10 Sek.</option><option value="15">15 Sek.</option></select></label>
+        <label>Gefragt wird nach<select id="direction"><option value="mixed">Floskeln und Bedeutungen</option><option value="term">Der passenden Floskel</option><option value="meaning">Der passenden Bedeutung</option></select></label>
+        <button class="primary">Quiz erstellen <span aria-hidden="true">↗</span></button>
+      </form>
+    </section>
+    <div class="stack">
+      <section class="panel home-panel join-home" id="mitspielen">
+        <h2>Mitspielen</h2><p class="home-description">Vier Antworten, eine richtige. Schnelle Treffer bringen mehr Punkte. Falsch geraten? −100 Punkte und Feedback aus der Chefetage.</p>
+        <form id="enter"><label>Spielcode<input id="code" required minlength="5" maxlength="5" pattern="[A-Za-z0-9]{5}" placeholder="QWV42" autocomplete="off" autocapitalize="characters"></label><button>Zum Beitritt →</button></form>
+      </section>
+      <details class="panel home-panel term-home"><summary>Neue Floskel hinzufügen</summary>
+        <p class="home-description">Hat jemand „Parken wir das mal“ gesagt? Das Glossar nimmt Verbesserungsvorschläge entgegen.</p>
+        <form id="add-home"><label>Floskel<input id="home-term" required maxlength="70"></label><label>Bedeutung<textarea id="home-meaning" required maxlength="240"></textarea></label><button>Floskel speichern</button><p id="home-added" role="status" hidden></p></form>
+      </details>
+    </div>
+  </div>
+  <section class="panel home-panel overall board-ranking">
+    <div class="board-ranking-head"><div><h2>Gesamtwertung</h2><p class="home-description">Die Beförderungsliste für messbare Meeting-Kompetenz.</p></div><p class="home-description">Durchschnitt aus abgeschlossenen Quizrunden<br>Bis zu 1.000 Punkte pro Runde</p></div>
+    <div id="overall"></div>
+  </section>
+  <footer class="campaign-footer">Die Teilnahme ersetzt keine Führungsverantwortung. Für Folgeschäden durch weitere Meetings ist der Lenkungskreis zuständig.</footer>
 </section>
 <section id="room" hidden>
   <div class="room-head"><div><p id="role" class="muted"></p><h1 id="room-title">Quiz</h1></div><div id="room-links"><a id="beam-link" class="button" target="_blank" rel="noopener" hidden>Beamer öffnen ↗</a></div></div>
