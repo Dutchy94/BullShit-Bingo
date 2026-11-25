@@ -3,56 +3,50 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#171514">
+<meta name="theme-color" content="#f5f1e8">
 <title>Bullshit Bingo Monday</title>
-<link rel="stylesheet" href="/static/style.css">
-<script src="/static/app.js" defer></script>
+<link rel="stylesheet" href="/static/style.css?v=quiz">
+<script src="/static/app.js?v=quiz" defer></script>
 </head>
 <body>
-<header><a href="/" class="brand"><span class="logo">✳</span> BULLSHIT BINGO</a><span id="connection" class="connection" hidden></span></header>
-<main>
-<section class="hero">
-<div class="hero-copy">
-  <p class="eyebrow">Das Meeting-Spiel</p>
-  <h1>Bullshit Bingo<br><em>Monday.</em></h1>
-  <p id="intro">Markiere gefallene Floskeln und hol dir mit einer vollen Reihe, Spalte oder Diagonale ein Bingo.</p>
-</div>
-<figure class="sample" aria-label="Beispiel für ein Bingo: Die Diagonale ist vollständig markiert">
-  <div class="sample-grid" aria-hidden="true">
-    <span class="hit">Quick Win</span><span>Alignment</span><span>Roadmap</span>
-    <span>SteerCo</span><span class="hit">Synergien</span><span>Deep Dive</span>
-    <span>Buy-in</span><span>Scope</span><span class="hit">Follow-up</span>
-  </div>
-  <figcaption>✦ Bingo! Können wir so mitnehmen.</figcaption>
-</figure>
-</section>
+<header><div class="shell top"><a href="/" class="brand"><span aria-hidden="true">✳</span> Bullshit Bingo Monday</a><span id="connection" hidden></span></div></header>
+<main class="shell">
 <p id="error" role="alert" hidden></p>
-<section id="lobby" class="layout" hidden>
-  <article class="panel"><h2>Runde erstellen</h2><form id="create">
-  <label>Spielfeld<select id="create-size"><option value="3">3 × 3 · Kurzmeeting</option><option value="4">4 × 4 · Workshop</option><option value="5" selected>5 × 5 · Klassiker</option></select></label>
-  <button class="primary">Runde erstellen ↗</button></form></article>
-  <article class="panel"><h2>Runde beitreten</h2><form id="enter">
-  <label>Spielcode<input id="code" required minlength="5" maxlength="5" pattern="[A-Za-z0-9]{5}" placeholder="QWV42" autocomplete="off"></label>
-  <button>Weiter →</button></form></article>
+<section id="home" hidden>
+  <div class="intro"><h1>Floskel gehört.<br><em>Was heißt das?</em></h1><p>Vier Antworten, eine richtige. Je schneller du richtig liegst, desto mehr Punkte gibt’s. Wer danebenliegt, bekommt −100 Punkte und einen Spruch fürs nächste Meeting.</p></div>
+  <div class="columns">
+    <section class="panel"><h2>Quiz leiten</h2><form id="create">
+      <div class="fields"><label>Fragen<select id="rounds"><option>5</option><option selected>10</option><option>15</option></select></label><label>Zeit pro Frage<select id="seconds"><option value="10">10 Sek.</option><option value="15" selected>15 Sek.</option><option value="20">20 Sek.</option><option value="30">30 Sek.</option></select></label></div>
+      <label>Gefragt wird nach<select id="direction"><option value="mixed">Floskeln und Bedeutungen</option><option value="term">Der passenden Floskel</option><option value="meaning">Der passenden Bedeutung</option></select></label>
+      <button class="primary">Quiz erstellen</button>
+    </form></section>
+    <section class="panel"><h2>Mitspielen</h2><form id="enter"><label>Spielcode<input id="code" required minlength="5" maxlength="5" pattern="[A-Za-z0-9]{5}" placeholder="QWV42" autocomplete="off" autocapitalize="characters"></label><button>Zum Beitritt →</button></form></section>
+  </div>
+  <section class="panel overall"><h2>Gesamtwertung</h2><p class="muted">Punkte aus abgeschlossenen Quizrunden.</p><div id="overall"></div></section>
 </section>
 <section id="room" hidden>
-  <div class="room-bar"><div><span class="eyebrow">Spielcode</span><strong id="room-code"></strong></div><span id="status" class="pill"></span><button id="share" type="button">Einladungslink kopieren</button><a id="live" class="button" target="_blank" rel="noopener">Beamer-Ansicht ↗</a></div>
-  <div class="layout game">
-    <div class="stack" id="play">
-      <article class="panel" id="join-panel" hidden><h2>Mitspielen</h2><form id="join"><label>Dein Name<input id="name" maxlength="40" required autocomplete="nickname"></label><button class="primary">Spielfeld holen</button></form></article>
-      <article class="panel" id="card-panel" hidden><div class="heading"><h2>Dein Spielfeld</h2><span id="personal"></span></div><div id="card"></div><p id="meaning" aria-live="polite"></p></article>
+  <div class="room-head"><div><p id="role" class="muted"></p><h1 id="room-title">Quiz</h1></div><div id="room-links"><a id="beam-link" class="button" target="_blank" rel="noopener" hidden>Beamer öffnen ↗</a></div></div>
+  <div class="columns room-grid">
+    <div class="stack">
+      <section id="invite" class="panel invite" hidden>
+        <img id="qr" width="158" height="158" alt="QR-Code zur Beitrittsseite">
+        <div><h2>Mit dem Handy scannen</h2><p>Oder auf der Startseite diesen Spielcode eingeben.</p><strong id="room-code"></strong><button id="copy" type="button">Einladungslink kopieren</button></div>
+      </section>
+      <section id="join-panel" class="panel" hidden><h2>Quiz beitreten</h2><form id="join"><label>Dein Name<input id="name" name="name" autocomplete="nickname" required maxlength="30"></label><button class="primary">Mitspielen</button></form></section>
+      <section id="question-panel" class="panel" hidden>
+        <div class="question-meta"><span id="question-number"></span><strong id="timer"></strong></div>
+        <progress id="timer-bar"></progress>
+        <p id="question-label" class="muted"></p><h2 id="prompt"></h2>
+        <div id="choices"></div><p id="feedback" role="status" hidden></p>
+      </section>
+      <section id="waiting" class="panel" hidden><h2>Du bist dabei.</h2><p>Die Spielleitung startet gleich das Quiz.</p></section>
+      <section id="finished" class="panel" hidden><h2>Meeting beendet.</h2><p id="winner"></p><a class="button" href="/">Zur Gesamtwertung →</a></section>
+      <section id="controls" class="panel" hidden><p id="answers-count" class="muted"></p><div class="actions"><button type="button" id="next" class="primary"></button><button type="button" id="reveal">Auflösen</button><button type="button" id="finish">Quiz beenden</button></div></section>
+      <details id="custom" class="panel" hidden><summary>Eigene Floskel hinzufügen</summary><form id="add"><label>Floskel<input id="term" required maxlength="70"></label><label>Bedeutung<textarea id="meaning" required maxlength="240"></textarea></label><button>Speichern</button><p id="added" role="status"></p></form></details>
     </div>
-    <aside class="panel ranking"><div class="heading"><h2>Ranking</h2><span id="count"></span></div><p id="leader"></p><div id="ranking"></div></aside>
+    <section class="panel"><div class="rank-title"><h2>Live-Ranking</h2><span id="count" class="muted"></span></div><div id="ranking"></div></section>
   </div>
-  <details id="host" class="panel" hidden><summary>Runde verwalten</summary>
-    <div class="actions"><button class="primary" data-action="start">Starten / fortsetzen</button><button data-action="pause">Pausieren</button><button data-action="reset">Zurücksetzen</button><button data-action="new">Neue Karten ziehen</button></div>
-    <div class="layout settings">
-      <form id="settings"><h2>Spieleinstellungen</h2><label>Spielfeld<select id="size"><option value="3">3 × 3 · Kurzmeeting</option><option value="4">4 × 4 · Workshop</option><option value="5">5 × 5 · Klassiker</option></select></label>
-       <details><summary id="selected">Floskeln auswählen</summary><input id="filter" aria-label="Floskeln filtern" placeholder="Floskeln suchen"><div class="actions"><button id="select-all" type="button">Alle</button><button id="select-none" type="button">Keine</button></div><div id="terms"></div></details>
-       <button>Einstellungen speichern</button><small>Vor dem Start verfügbar. Beim Speichern werden die Karten neu gezogen.</small></form>
-      <form id="add"><h2>Neue Floskel</h2><label>Floskel<input id="term" required maxlength="70"></label><label>Was heißt das eigentlich?<textarea id="translation" required maxlength="240"></textarea></label><button>Floskel hinzufügen</button><small id="added" role="status"></small></form>
-    </div>
-  </details>
 </section>
 </main>
-</body></html>
+</body>
+</html>
