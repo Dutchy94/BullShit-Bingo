@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#f5f1e8">
 <title>Bullshit Bingo Monday · Abteilung für strategische Floskeln</title>
 <meta name="description" content="Das Live-Quiz für alle, die in Meetings schon mal eine Synergie gehoben haben. Per QR-Code mitspielen und Daily Sprint Master werden.">
-<link rel="stylesheet" href="/static/style.css?v=freigabeprozess">
-<script src="/static/app.js?v=freigabeprozess" defer></script>
+<link rel="stylesheet" href="/static/style.css?v=projektauftrag">
+<script src="/static/app.js?v=projektauftrag" defer></script>
 </head>
 <body>
 <main class="shell">
@@ -94,12 +94,16 @@
           <h2 id="approval-title">Sind Sie sich wirklich sicher, dass Sie eine Aktion ausführen wollen?</h2>
           <fieldset id="approval-checks">
             <legend>Freigaben für die Quiz-Erstellung</legend>
-            <label><input type="checkbox"> Abteilungsleitung</label>
-            <label><input type="checkbox"> IT</label>
-            <label><input type="checkbox"> Projektbüro</label>
+            <p>Eine Stelle darf vorprüfen. Sobald eine zweite mitzeichnet, braucht das Quiz einen Projektauftrag.</p>
+            <label><input type="checkbox" value="department"> Abteilungsleitung</label>
+            <label><input type="checkbox" value="it"> IT</label>
+            <label><input type="checkbox" value="project"> Projektbüro</label>
           </fieldset>
           <p id="approval-veto" role="status"></p>
-          <p id="approval-bypass" role="status" hidden>Am Prozess vorbei arbeiten?</p>
+          <div id="approval-bypass" hidden>
+            <p class="approval-loop">Das Quiz braucht einen Projektauftrag. Der Projektauftrag braucht einen Quizcode.</p>
+            <p class="approval-question">Am Prozess vorbei arbeiten?</p>
+          </div>
           <div class="actions">
             <button id="approval-yes" type="button" class="primary" hidden>Ja</button>
             <button id="approval-no" type="button">Abbrechen</button>

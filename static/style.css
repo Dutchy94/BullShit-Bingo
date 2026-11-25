@@ -386,8 +386,10 @@ main{padding-bottom:3rem!important}h1,h2,p{margin:0}h1{font-size:clamp(2rem,5.6v
 .approval-body { display: grid; gap: 1rem; padding: clamp(1rem, 4vw, 1.5rem); }
 #approval-checks { margin: 0; padding: .65rem .8rem; border: 1px solid var(--report-rule); }
 #approval-checks legend { padding-inline: .25rem; font-size: .9rem; }
+#approval-checks p { margin: .2rem 0 .55rem; color: #4f5449; font-size: .9rem; }
 #approval-checks label { display: flex; align-items: center; gap: .55rem; padding-block: .25rem; }
 #approval-checks input { accent-color: var(--report-accent); }
 #approval-veto { color: var(--report-accent); font-size: .92rem; }
 #approval-veto:empty { display: none; }
-#approval-bypass { font-size: 1.12rem; font-weight: 750; }
+.approval-loop { margin-bottom: .45rem; color: #4f5449; font-size: .9rem; }
+.approval-question { font-size: 1.12rem; font-weight: 750; }

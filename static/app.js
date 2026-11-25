@@ -239,6 +239,11 @@ document.querySelectorAll("[data-report]").forEach((button) => {
 
 const approval = $("approval-dialog");
 const approvals = [...$("approval-checks").querySelectorAll("input")];
+const approvalVetoes = {
+  department: "Abteilungsleitung: Für ein Projekt brauche ich einen Business Case. Bitte in Excel, damit wir ihn als PDF ablegen können.",
+  it: "IT: Für ein Projekt brauche ich ein Ticket. Pflichtfeld im Ticket: der Quizcode des noch zu erstellenden Quiz.",
+  project: "Projektbüro: Für ein Projekt brauche ich einen Auftrag. Ohne Quizcode darf ich ihn nur als Entwurf nummerieren."
+};
 let vetoes = 0;
 
 form("create", () => {
@@ -257,9 +262,8 @@ for (const checkbox of approvals) {
     if (!checkbox.checked || approvals.filter((item) => item.checked).length < 2) return;
     checkbox.checked = false;
     vetoes += 1;
-    $("approval-veto").textContent = vetoes === 1
-      ? "Veto: Die Entwicklungsleitung hat schon zugestimmt. Damit ist die Zuständigkeit ungeklärt."
-      : "Zweites Veto: Die Zustimmung der Entwicklungsleitung muss erst abgestimmt werden.";
+    $("approval-veto").textContent = (vetoes === 1 ? "Veto – " : "Zweites Veto – ")
+      + approvalVetoes[checkbox.value];
     if (vetoes === 2) {
       $("approval-checks").hidden = true;
       $("approval-bypass").hidden = false;
