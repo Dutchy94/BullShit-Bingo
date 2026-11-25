@@ -237,8 +237,45 @@ document.querySelectorAll("[data-report]").forEach((button) => {
   };
 });
 
-form("create", async () => {
+const approval = $("approval-dialog");
+const approvals = [...$("approval-checks").querySelectorAll("input")];
+let vetoes = 0;
+
+form("create", () => {
+  vetoes = 0;
+  approvals.forEach((checkbox) => { checkbox.checked = false; });
+  $("approval-checks").hidden = false;
+  $("approval-veto").textContent = "";
+  $("approval-bypass").hidden = true;
+  $("approval-yes").hidden = true;
+  $("approval-no").textContent = "Abbrechen";
+  approval.showModal();
+});
+
+for (const checkbox of approvals) {
+  checkbox.onchange = () => {
+    if (!checkbox.checked || approvals.filter((item) => item.checked).length < 2) return;
+    checkbox.checked = false;
+    vetoes += 1;
+    $("approval-veto").textContent = vetoes === 1
+      ? "Veto: Die Entwicklungsleitung hat schon zugestimmt. Damit ist die Zuständigkeit ungeklärt."
+      : "Zweites Veto: Die Zustimmung der Entwicklungsleitung muss erst abgestimmt werden.";
+    if (vetoes === 2) {
+      $("approval-checks").hidden = true;
+      $("approval-bypass").hidden = false;
+      $("approval-yes").hidden = false;
+      $("approval-no").textContent = "Nein";
+      $("approval-no").focus();
+    }
+  };
+}
+
+$("approval-no").onclick = () => approval.close();
+$("approval-yes").onclick = async () => {
+  approval.close();
+  const button = $("create").querySelector("button");
   const progress = $("create-progress");
+  button.disabled = true;
   progress.textContent = "Warten auf IT-Freigabe …";
   progress.hidden = false;
   try {
@@ -252,10 +289,12 @@ form("create", async () => {
     localStorage.setItem("quiz-host:" + data.code, data.token);
     location.assign("/host/" + data.code);
   } catch (failure) {
+    error(failure.message);
+  } finally {
     progress.hidden = true;
-    throw failure;
+    button.disabled = false;
   }
-});
+};
 form("enter", () => location.assign("/join/" + $("code").value.trim().toUpperCase()));
 form("join", async () => {
   let identity = localStorage.getItem("quiz-identity");
