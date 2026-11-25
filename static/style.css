@@ -327,3 +327,22 @@ main{padding-bottom:3rem!important}h1,h2,p{margin:0}h1{font-size:clamp(2rem,5.6v
 }
 .rank-group-heading span { font-size: .8rem; font-weight: 500; }
 .board-ranking .rank-group-heading + .rank { border-top: 0; }
+
+.report-secret {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline dotted;
+  text-underline-offset: .2em;
+}
+.report-data .report-secret { color: var(--report-accent); font-weight: 750; }
+.report-secret:hover:not(:disabled) { box-shadow: none; text-decoration-style: solid; }
+#report-reply {
+  margin-top: .55rem;
+  padding-left: .55rem;
+  border-left: 2px solid var(--report-accent);
+  color: var(--report-accent);
+}
+#create-progress { color: #4f5449; font-size: .86rem; }

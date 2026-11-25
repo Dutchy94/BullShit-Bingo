@@ -215,13 +215,46 @@ function connect() {
   };
 }
 
+const reportReplies = {
+  decisions: [
+    "Beschluss vertagt. Die Folie bleibt im Deck.",
+    "Stand heute: drei Beschlussvorlagen, null Beschlüsse.",
+    "Der Lenkungskreis hat entschieden, die Entscheidung zu delegieren."
+  ],
+  meeting: [
+    "Der Termin zur Terminfindung wurde verschoben. Ersatztermin folgt nach Abstimmung.",
+    "Einladung versendet. Teilnehmerkreis wird im Vorgespräch geklärt.",
+    "Raum gebucht: Druckernische B. Agenda folgt als PDF."
+  ]
+};
+document.querySelectorAll("[data-report]").forEach((button) => {
+  let next = 0;
+  button.onclick = () => {
+    const replies = reportReplies[button.dataset.report];
+    $("report-reply").textContent = replies[next];
+    $("report-reply").hidden = false;
+    next = (next + 1) % replies.length;
+  };
+});
+
 form("create", async () => {
-  const data = await api("quizzes", {
-    rounds: Number($("rounds").value), seconds: Number($("seconds").value),
-    pause: Number($("pause").value), direction: $("direction").value
-  });
-  localStorage.setItem("quiz-host:" + data.code, data.token);
-  location.assign("/host/" + data.code);
+  const progress = $("create-progress");
+  progress.textContent = "Warten auf IT-Freigabe …";
+  progress.hidden = false;
+  try {
+    const [data] = await Promise.all([
+      api("quizzes", {
+        rounds: Number($("rounds").value), seconds: Number($("seconds").value),
+        pause: Number($("pause").value), direction: $("direction").value
+      }),
+      new Promise((resolve) => setTimeout(resolve, 650))
+    ]);
+    localStorage.setItem("quiz-host:" + data.code, data.token);
+    location.assign("/host/" + data.code);
+  } catch (failure) {
+    progress.hidden = true;
+    throw failure;
+  }
 });
 form("enter", () => location.assign("/join/" + $("code").value.trim().toUpperCase()));
 form("join", async () => {
@@ -238,7 +271,7 @@ form("join", async () => {
 form("add-home", async () => {
   const data = await api("terms", {term: $("home-term").value, meaning: $("home-meaning").value});
   $("add-home").reset();
-  $("home-added").textContent = "Im Quiz-Pool gespeichert: " + data.term;
+  $("home-added").textContent = "Im Quiz-Pool gespeichert: " + data.term + ". Das Wording ist damit offiziell im Umlauf.";
   $("home-added").hidden = false;
 });
 form("add", async () => {
